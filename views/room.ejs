@@ -1,41 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Video Chat</title>
-
-  <link rel="stylesheet" href="/style.css" />
-
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
-
-  <script>
-    const ROOM_ID = "<%= roomId %>";
-    let username = prompt("Enter your name:");
-  </script>
+  <link rel="stylesheet" href="/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.1/socket.io.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/peerjs@0.6.1/dist/peerjs.min.js"></script>
 </head>
-
 <body>
-
   <div class="header">
-    <h2>Video Chat</h2>
+    <div class="logo"><h3>Video Chat</h3></div>
   </div>
-
-  <div id="video-grid"></div>
-
-  <div class="controls">
-    <button id="muteButton">Mute</button>
-    <button id="videoButton">Stop Video</button>
-    <button id="leaveButton">Leave</button>
+  <div class="main">
+    <div class="main__left">
+      <div class="videos__group"><div id="video-grid"></div></div>
+      <div class="options">
+        <div class="options__left">
+          <div class="options__button"><i class="fa fa-video-camera"></i></div>
+          <div class="options__button"><i class="fa fa-microphone"></i></div>
+        </div>
+        <div class="options__right">
+          <div class="options__button background__red"><i class="fa fa-phone"></i></div>
+        </div>
+      </div>
+    </div>
+    <div class="main__right">
+      <div class="main__chat_window"><ul class="messages"></ul></div>
+      <div class="main__message_container">
+        <input id="chat_message" type="text" placeholder="Type message here...">
+        <div class="options__button"><i class="fa fa-plus"></i></div>
+      </div>
+    </div>
   </div>
-
-  <div class="chat">
-    <ul id="messages"></ul>
-    <input id="chatInput" placeholder="Type message..." />
-  </div>
-
   <script src="/script.js"></script>
-
 </body>
 </html>
 
