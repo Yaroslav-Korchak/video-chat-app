@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Video Chat</title>
+
+  <link rel="stylesheet" href="/style.css" />
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+
+  <script>
+    const ROOM_ID = "<%= roomId %>";
+    let username = prompt("Enter your name:");
+  </script>
+</head>
+
+<body>
+
+  <div class="header">
+    <h2>Video Chat</h2>
+  </div>
+
+  <div id="video-grid"></div>
+
+  <div class="controls">
+    <button id="muteButton">Mute</button>
+    <button id="videoButton">Stop Video</button>
+    <button id="leaveButton">Leave</button>
+  </div>
+
+  <div class="chat">
+    <ul id="messages"></ul>
+    <input id="chatInput" placeholder="Type message..." />
+  </div>
+
+  <script src="/script.js"></script>
+
+</body>
+</html>
+
