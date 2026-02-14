@@ -244,3 +244,5 @@ cython_debug/
 
 ./assets/
 /assets/
+node_modules/
+.DS_Store
