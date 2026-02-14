@@ -1,58 +1,31 @@
-const express = require("express");
+import express from "express";
+import { createServer } from "http";
+import { v4 as uuidv4 } from "uuid";
+import { Server } from "socket.io";
+import { ExpressPeerServer } from "peer";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
-const server = require("http").Server(app);
-const { v4: uuidv4 } = require("uuid");
-const io = require("socket.io")(server);
-const { ExpressPeerServer } = require("peer");
-const { Pool } = require("pg");
+const server = createServer(app);
+const io = new Server(server);
+const peerServer = ExpressPeerServer(server, { debug: true });
 
 app.set("view engine", "ejs");
-app.use(express.static("public"));
-
-const peerServer = ExpressPeerServer(server, {
-  debug: true,
-});
 app.use("/peerjs", peerServer);
+app.use(express.static(path.join(__dirname, "public")));
 
-// PostgreSQL
-const pool = new Pool({
-  user: "postgres",
-  host: "db", // docker service name
-  database: "videochat",
-  password: "postgres",
-  port: 5432,
-});
+app.get("/", (req, res) => res.redirect(`/${uuidv4()}`));
+app.get("/:room", (req, res) => res.render("room", { roomId: req.params.room }));
 
-// Главная → новая комната
-app.get("/", (req, res) => {
-  res.redirect(`/${uuidv4()}`);
-});
-
-// Комната
-app.get("/:room", (req, res) => {
-  res.render("room", { roomId: req.params.room });
-});
-
-// Socket logic
 io.on("connection", (socket) => {
   socket.on("join-room", (roomId, userId) => {
     socket.join(roomId);
-    socket.to(roomId).emit("user-connected", userId);
-
-    socket.on("message", async (message) => {
-      await pool.query(
-        "INSERT INTO messages(content) VALUES($1)",
-        [message]
-      );
-      io.to(roomId).emit("createMessage", message);
-    });
-
-    socket.on("disconnect", () => {
-      socket.to(roomId).emit("user-disconnected", userId);
-    });
+    socket.to(roomId).broadcast.emit("user-connected", userId);
   });
 });
 
-server.listen(3030, () => {
-  console.log("Server started on http://localhost:3030");
-});
+server.listen(3030, () => console.log("Server started on port 3030"));
